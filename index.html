@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Temple Run Game</title>
+    <title>Temple Run Game - Enhanced</title>
     <style>
         * {
             margin: 0;
@@ -13,7 +13,7 @@
 
         body {
             font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #8B4513, #D2691E, #CD853F);
+            background: linear-gradient(135deg, #1a0f0a, #8B4513, #D2691E, #CD853F);
             overflow: hidden;
             height: 100vh;
         }
@@ -29,7 +29,7 @@
             position: absolute;
             top: 0;
             left: 0;
-            background: linear-gradient(to bottom, #87CEEB 0%, #98FB98 50%, #8B4513 100%);
+            background: linear-gradient(to bottom, #FF6B35 0%, #87CEEB 20%, #98FB98 60%, #8B4513 100%);
         }
 
         #startScreen, #gameOverScreen {
@@ -38,35 +38,51 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.8);
+            background: rgba(0, 0, 0, 0.9);
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             color: white;
             z-index: 100;
+            backdrop-filter: blur(5px);
         }
 
         .screen-title {
-            font-size: 48px;
-            margin-bottom: 20px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            font-size: 56px;
+            margin-bottom: 30px;
+            text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.8);
+            background: linear-gradient(45deg, #FFD700, #FF6B35, #FFD700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: titleGlow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes titleGlow {
+            0% { filter: drop-shadow(0 0 20px #FFD700); }
+            100% { filter: drop-shadow(0 0 40px #FF6B35); }
         }
 
         .screen-button {
-            padding: 15px 30px;
-            font-size: 20px;
-            background: #FF6B35;
+            padding: 20px 40px;
+            font-size: 24px;
+            background: linear-gradient(45deg, #FF6B35, #FFD700);
             color: white;
             border: none;
-            border-radius: 10px;
+            border-radius: 15px;
             cursor: pointer;
-            margin: 10px;
-            transition: background 0.3s;
+            margin: 15px;
+            transition: all 0.3s;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+            font-weight: bold;
+            text-transform: uppercase;
         }
 
         .screen-button:hover {
-            background: #FF8C69;
+            transform: translateY(-3px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4);
+            background: linear-gradient(45deg, #FFD700, #FF6B35);
         }
 
         #gameUI {
@@ -75,97 +91,71 @@
             left: 20px;
             z-index: 50;
             color: white;
-            font-size: 24px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+            font-size: 28px;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.8);
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px 25px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
         }
 
         #instructions {
             position: absolute;
-            bottom: 50px;
+            bottom: 80px;
             left: 50%;
             transform: translateX(-50%);
             color: white;
             text-align: center;
-            font-size: 18px;
+            font-size: 20px;
             z-index: 50;
+            background: rgba(0, 0, 0, 0.4);
+            padding: 20px;
+            border-radius: 10px;
+            backdrop-filter: blur(5px);
         }
 
-        .player {
+        .particle {
             position: absolute;
-            width: 40px;
-            height: 60px;
-            background: #FFD700;
-            border-radius: 20px 20px 10px 10px;
-            transition: all 0.3s ease;
+            pointer-events: none;
+            animation: particleFloat 3s ease-out forwards;
         }
 
-        .player::before {
-            content: '';
-            position: absolute;
-            top: 5px;
-            left: 10px;
-            width: 20px;
-            height: 20px;
-            background: #8B4513;
-            border-radius: 50%;
-        }
-
-        .player::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 5px;
-            width: 30px;
-            height: 20px;
-            background: #FF6B35;
-            border-radius: 0 0 15px 15px;
-        }
-
-        .obstacle {
-            position: absolute;
-            background: #8B4513;
-            border-radius: 5px;
-        }
-
-        .coin {
-            position: absolute;
-            width: 20px;
-            height: 20px;
-            background: #FFD700;
-            border-radius: 50%;
-            animation: coinSpin 1s linear infinite;
+        @keyframes particleFloat {
+            0% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-100px) scale(0.5);
+            }
         }
 
         @keyframes coinSpin {
-            0% { transform: rotateY(0deg); }
-            100% { transform: rotateY(360deg); }
+            0% { transform: rotateY(0deg) scale(1); }
+            50% { transform: rotateY(180deg) scale(1.2); }
+            100% { transform: rotateY(360deg) scale(1); }
         }
 
-        .ground {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 100px;
-            background: repeating-linear-gradient(
-                90deg,
-                #8B4513 0px,
-                #8B4513 50px,
-                #A0522D 50px,
-                #A0522D 100px
-            );
+        @keyframes playerRun {
+            0%, 100% { transform: scaleX(1); }
+            50% { transform: scaleX(1.1); }
         }
 
         @media (max-width: 768px) {
             .screen-title {
-                font-size: 36px;
+                font-size: 42px;
             }
             .screen-button {
-                font-size: 18px;
-                padding: 12px 24px;
+                font-size: 20px;
+                padding: 16px 32px;
             }
             #instructions {
-                font-size: 16px;
+                font-size: 18px;
+            }
+            #gameUI {
+                font-size: 24px;
+                padding: 12px 20px;
             }
         }
     </style>
@@ -176,24 +166,27 @@
         
         <div id="startScreen">
             <h1 class="screen-title">🏛️ Temple Run</h1>
-            <button class="screen-button" onclick="startGame()">Start Game</button>
+            <button class="screen-button" onclick="startGame()">Start Adventure</button>
             <div id="instructions">
-                <p>Use SPACEBAR to jump and SHIFT to slide</p>
-                <p>Collect coins and avoid obstacles!</p>
+                <p>🎮 Use SPACEBAR to jump and SHIFT to slide</p>
+                <p>💰 Collect golden coins and avoid ancient obstacles!</p>
+                <p>⚡ Survive as long as you can in the temple!</p>
             </div>
         </div>
 
         <div id="gameOverScreen" style="display: none;">
-            <h1 class="screen-title">Game Over!</h1>
-            <p id="finalScore">Score: 0</p>
-            <p id="finalCoins">Coins: 0</p>
-            <button class="screen-button" onclick="restartGame()">Play Again</button>
+            <h1 class="screen-title">⚰️ Game Over!</h1>
+            <p id="finalScore" style="font-size: 32px; margin: 10px;">Score: 0</p>
+            <p id="finalCoins" style="font-size: 28px; margin: 10px;">Coins: 0</p>
+            <p id="finalDistance" style="font-size: 24px; margin: 10px;">Distance: 0m</p>
+            <button class="screen-button" onclick="restartGame()">Try Again</button>
         </div>
 
         <div id="gameUI" style="display: none;">
-            <div>Score: <span id="score">0</span></div>
-            <div>Coins: <span id="coins">0</span></div>
-            <div>Speed: <span id="speed">1</span></div>
+            <div>💯 Score: <span id="score">0</span></div>
+            <div>💰 Coins: <span id="coins">0</span></div>
+            <div>📏 Distance: <span id="distance">0</span>m</div>
+            <div>⚡ Speed: <span id="speed">1</span>x</div>
         </div>
     </div>
 
@@ -205,35 +198,41 @@
                 this.canvas.width = window.innerWidth;
                 this.canvas.height = window.innerHeight;
                 
-                this.gameState = 'menu'; // menu, playing, gameOver
+                this.gameState = 'menu';
                 this.score = 0;
                 this.coins = 0;
-                this.gameSpeed = 2;
-                this.speedIncrement = 0.005;
+                this.distance = 0;
+                this.gameSpeed = 1.5; // Reduced from 2
+                this.speedIncrement = 0.002; // Reduced from 0.005
                 
-                // Player properties
+                // Player properties with enhanced graphics
                 this.player = {
-                    x: 100,
-                    y: this.canvas.height - 160,
-                    width: 40,
-                    height: 60,
+                    x: 120,
+                    y: this.canvas.height - 180,
+                    width: 45,
+                    height: 70,
                     velocityY: 0,
-                    jumpPower: 15,
+                    jumpPower: 12, // Reduced from 15
                     isJumping: false,
                     isSliding: false,
-                    slideTimer: 0
+                    slideTimer: 0,
+                    animationFrame: 0,
+                    runCycle: 0
                 };
                 
-                this.groundHeight = 100;
+                this.groundHeight = 120;
                 this.obstacles = [];
                 this.coinItems = [];
                 this.background = [];
+                this.particles = [];
+                this.clouds = [];
                 
                 this.lastTime = 0;
                 this.animationId = null;
                 
                 this.setupEventListeners();
                 this.createBackground();
+                this.createClouds();
             }
             
             setupEventListeners() {
@@ -255,7 +254,6 @@
                     }
                 });
                 
-                // Touch controls for mobile
                 this.canvas.addEventListener('touchstart', (e) => {
                     e.preventDefault();
                     if (this.gameState === 'playing') {
@@ -274,56 +272,104 @@
                 window.addEventListener('resize', () => {
                     this.canvas.width = window.innerWidth;
                     this.canvas.height = window.innerHeight;
-                    this.player.y = this.canvas.height - 160;
+                    this.player.y = this.canvas.height - 180;
                 });
             }
             
             createBackground() {
-                for (let i = 0; i < 10; i++) {
+                for (let i = 0; i < 15; i++) {
                     this.background.push({
-                        x: i * 200,
-                        type: Math.random() > 0.5 ? 'tree' : 'rock'
+                        x: i * 150,
+                        type: Math.random() > 0.6 ? 'temple' : Math.random() > 0.5 ? 'tree' : 'rock',
+                        height: 100 + Math.random() * 100
                     });
                 }
+            }
+            
+            createClouds() {
+                for (let i = 0; i < 8; i++) {
+                    this.clouds.push({
+                        x: Math.random() * this.canvas.width,
+                        y: 50 + Math.random() * 150,
+                        size: 30 + Math.random() * 40,
+                        speed: 0.2 + Math.random() * 0.3
+                    });
+                }
+            }
+            
+            createParticle(x, y, color, size = 5) {
+                this.particles.push({
+                    x: x,
+                    y: y,
+                    velocityX: (Math.random() - 0.5) * 4,
+                    velocityY: -Math.random() * 3 - 1,
+                    color: color,
+                    size: size,
+                    life: 60,
+                    maxLife: 60
+                });
             }
             
             jump() {
                 if (!this.player.isJumping && !this.player.isSliding) {
                     this.player.isJumping = true;
                     this.player.velocityY = -this.player.jumpPower;
+                    // Create jump particles
+                    for (let i = 0; i < 8; i++) {
+                        this.createParticle(
+                            this.player.x + Math.random() * this.player.width,
+                            this.player.y + this.player.height,
+                            '#8B4513',
+                            3
+                        );
+                    }
                 }
             }
             
             slide() {
                 if (!this.player.isJumping) {
                     this.player.isSliding = true;
-                    this.player.slideTimer = 500; // Slide for 500ms
+                    this.player.slideTimer = 600;
+                    // Create slide particles
+                    for (let i = 0; i < 6; i++) {
+                        this.createParticle(
+                            this.player.x + this.player.width,
+                            this.player.y + this.player.height,
+                            '#D2691E',
+                            2
+                        );
+                    }
                 }
             }
             
             spawnObstacle() {
-                const types = ['low', 'high', 'middle'];
+                const types = ['low', 'high', 'middle', 'spike'];
                 const type = types[Math.floor(Math.random() * types.length)];
                 
                 let obstacle = {
                     x: this.canvas.width,
                     type: type,
-                    width: 30,
-                    height: 40
+                    width: 35,
+                    height: 45
                 };
                 
                 switch (type) {
                     case 'low':
                         obstacle.y = this.canvas.height - this.groundHeight - obstacle.height;
-                        obstacle.height = 30;
+                        obstacle.height = 35;
                         break;
                     case 'high':
-                        obstacle.y = this.canvas.height - this.groundHeight - 120;
-                        obstacle.height = 80;
+                        obstacle.y = this.canvas.height - this.groundHeight - 130;
+                        obstacle.height = 90;
                         break;
                     case 'middle':
+                        obstacle.y = this.canvas.height - this.groundHeight - 70;
+                        obstacle.height = 50;
+                        break;
+                    case 'spike':
                         obstacle.y = this.canvas.height - this.groundHeight - 60;
-                        obstacle.height = 40;
+                        obstacle.height = 60;
+                        obstacle.width = 25;
                         break;
                 }
                 
@@ -331,31 +377,58 @@
             }
             
             spawnCoin() {
-                const coin = {
-                    x: this.canvas.width,
-                    y: this.canvas.height - this.groundHeight - 80 - Math.random() * 100,
-                    width: 20,
-                    height: 20,
-                    collected: false
-                };
-                this.coinItems.push(coin);
+                const patterns = ['single', 'line', 'arc'];
+                const pattern = patterns[Math.floor(Math.random() * patterns.length)];
+                
+                if (pattern === 'single') {
+                    const coin = {
+                        x: this.canvas.width,
+                        y: this.canvas.height - this.groundHeight - 100 - Math.random() * 120,
+                        width: 25,
+                        height: 25,
+                        collected: false,
+                        rotation: 0
+                    };
+                    this.coinItems.push(coin);
+                } else if (pattern === 'line') {
+                    for (let i = 0; i < 5; i++) {
+                        const coin = {
+                            x: this.canvas.width + i * 30,
+                            y: this.canvas.height - this.groundHeight - 120,
+                            width: 25,
+                            height: 25,
+                            collected: false,
+                            rotation: 0
+                        };
+                        this.coinItems.push(coin);
+                    }
+                }
             }
             
             updatePlayer(deltaTime) {
-                // Gravity
+                this.player.runCycle += deltaTime * 0.01;
+                this.player.animationFrame = Math.floor(this.player.runCycle) % 4;
+                
                 if (this.player.isJumping) {
-                    this.player.velocityY += 0.8;
+                    this.player.velocityY += 0.6; // Reduced gravity
                     this.player.y += this.player.velocityY;
                     
-                    // Land
-                    if (this.player.y >= this.canvas.height - 160) {
-                        this.player.y = this.canvas.height - 160;
+                    if (this.player.y >= this.canvas.height - 180) {
+                        this.player.y = this.canvas.height - 180;
                         this.player.isJumping = false;
                         this.player.velocityY = 0;
+                        // Landing particles
+                        for (let i = 0; i < 10; i++) {
+                            this.createParticle(
+                                this.player.x + Math.random() * this.player.width,
+                                this.player.y + this.player.height,
+                                '#CD853F',
+                                4
+                            );
+                        }
                     }
                 }
                 
-                // Sliding
                 if (this.player.isSliding) {
                     this.player.slideTimer -= deltaTime;
                     if (this.player.slideTimer <= 0) {
@@ -365,72 +438,106 @@
             }
             
             updateObstacles() {
-                // Move obstacles
                 for (let i = this.obstacles.length - 1; i >= 0; i--) {
-                    this.obstacles[i].x -= this.gameSpeed * 3;
+                    this.obstacles[i].x -= this.gameSpeed * 2.5; // Slower movement
                     
-                    // Remove off-screen obstacles
                     if (this.obstacles[i].x + this.obstacles[i].width < 0) {
                         this.obstacles.splice(i, 1);
-                        this.score += 10;
+                        this.score += 15;
                     }
                 }
                 
-                // Spawn new obstacles
-                if (Math.random() < 0.008) {
+                if (Math.random() < 0.006) { // Reduced spawn rate
                     this.spawnObstacle();
                 }
             }
             
             updateCoins() {
-                // Move coins
                 for (let i = this.coinItems.length - 1; i >= 0; i--) {
-                    this.coinItems[i].x -= this.gameSpeed * 3;
+                    this.coinItems[i].x -= this.gameSpeed * 2.5;
+                    this.coinItems[i].rotation += 0.1;
                     
-                    // Remove off-screen coins
                     if (this.coinItems[i].x + this.coinItems[i].width < 0) {
                         this.coinItems.splice(i, 1);
                     }
                 }
                 
-                // Spawn new coins
-                if (Math.random() < 0.005) {
+                if (Math.random() < 0.004) { // Reduced spawn rate
                     this.spawnCoin();
+                }
+            }
+            
+            updateParticles() {
+                for (let i = this.particles.length - 1; i >= 0; i--) {
+                    const particle = this.particles[i];
+                    particle.x += particle.velocityX;
+                    particle.y += particle.velocityY;
+                    particle.velocityY += 0.1;
+                    particle.life--;
+                    
+                    if (particle.life <= 0) {
+                        this.particles.splice(i, 1);
+                    }
                 }
             }
             
             updateBackground() {
                 for (let bg of this.background) {
-                    bg.x -= this.gameSpeed;
+                    bg.x -= this.gameSpeed * 0.8;
                     if (bg.x < -200) {
                         bg.x = this.canvas.width;
+                        bg.type = Math.random() > 0.6 ? 'temple' : Math.random() > 0.5 ? 'tree' : 'rock';
+                    }
+                }
+                
+                for (let cloud of this.clouds) {
+                    cloud.x -= cloud.speed;
+                    if (cloud.x < -cloud.size) {
+                        cloud.x = this.canvas.width + cloud.size;
+                        cloud.y = 50 + Math.random() * 150;
                     }
                 }
             }
             
             checkCollisions() {
-                // Check obstacle collisions
                 for (let obstacle of this.obstacles) {
                     const playerRect = {
-                        x: this.player.x,
-                        y: this.player.isSliding ? this.player.y + 20 : this.player.y,
-                        width: this.player.width,
-                        height: this.player.isSliding ? this.player.height - 20 : this.player.height
+                        x: this.player.x + 5,
+                        y: this.player.isSliding ? this.player.y + 25 : this.player.y + 5,
+                        width: this.player.width - 10,
+                        height: this.player.isSliding ? this.player.height - 30 : this.player.height - 10
                     };
                     
                     if (this.isColliding(playerRect, obstacle)) {
+                        // Create explosion particles
+                        for (let i = 0; i < 20; i++) {
+                            this.createParticle(
+                                obstacle.x + obstacle.width / 2,
+                                obstacle.y + obstacle.height / 2,
+                                '#FF4500',
+                                6
+                            );
+                        }
                         this.gameOver();
                         return;
                     }
                 }
                 
-                // Check coin collisions
                 for (let i = this.coinItems.length - 1; i >= 0; i--) {
                     const coin = this.coinItems[i];
                     if (this.isColliding(this.player, coin) && !coin.collected) {
                         coin.collected = true;
                         this.coins += 1;
-                        this.score += 5;
+                        this.score += 10;
+                        // Coin collection particles
+                        for (let j = 0; j < 12; j++) {
+                            this.createParticle(
+                                coin.x + coin.width / 2,
+                                coin.y + coin.height / 2,
+                                '#FFD700',
+                                4
+                            );
+                        }
                         this.coinItems.splice(i, 1);
                     }
                 }
@@ -443,98 +550,218 @@
                        rect1.y + rect1.height > rect2.y;
             }
             
-            drawPlayer() {
-                this.ctx.fillStyle = '#FFD700';
-                
-                let playerY = this.player.y;
-                let playerHeight = this.player.height;
-                
-                if (this.player.isSliding) {
-                    playerY += 20;
-                    playerHeight -= 20;
-                }
-                
-                // Body
-                this.ctx.fillRect(this.player.x, playerY, this.player.width, playerHeight);
-                
-                // Head
-                this.ctx.fillStyle = '#8B4513';
-                this.ctx.beginPath();
-                this.ctx.arc(this.player.x + 20, playerY + 10, 10, 0, Math.PI * 2);
-                this.ctx.fill();
-                
-                // Clothes
-                this.ctx.fillStyle = '#FF6B35';
-                this.ctx.fillRect(this.player.x + 5, playerY + 40, 30, 20);
-            }
-            
-            drawObstacles() {
-                this.ctx.fillStyle = '#8B4513';
-                for (let obstacle of this.obstacles) {
-                    this.ctx.fillRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
-                    
-                    // Add some detail
-                    this.ctx.fillStyle = '#654321';
-                    this.ctx.fillRect(obstacle.x + 5, obstacle.y + 5, obstacle.width - 10, obstacle.height - 10);
-                    this.ctx.fillStyle = '#8B4513';
-                }
-            }
-            
-            drawCoins() {
-                for (let coin of this.coinItems) {
-                    if (!coin.collected) {
-                        this.ctx.fillStyle = '#FFD700';
-                        this.ctx.beginPath();
-                        this.ctx.arc(coin.x + 10, coin.y + 10, 10, 0, Math.PI * 2);
-                        this.ctx.fill();
-                        
-                        this.ctx.fillStyle = '#FFA500';
-                        this.ctx.beginPath();
-                        this.ctx.arc(coin.x + 10, coin.y + 10, 6, 0, Math.PI * 2);
-                        this.ctx.fill();
-                    }
-                }
-            }
-            
             drawBackground() {
-                // Sky gradient
+                // Enhanced sky gradient
                 const gradient = this.ctx.createLinearGradient(0, 0, 0, this.canvas.height);
-                gradient.addColorStop(0, '#87CEEB');
+                gradient.addColorStop(0, '#FF6B35');
+                gradient.addColorStop(0.3, '#87CEEB');
                 gradient.addColorStop(0.7, '#98FB98');
                 gradient.addColorStop(1, '#8B4513');
                 
                 this.ctx.fillStyle = gradient;
                 this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
                 
-                // Ground
-                this.ctx.fillStyle = '#8B4513';
+                // Draw clouds
+                for (let cloud of this.clouds) {
+                    this.ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+                    this.ctx.beginPath();
+                    this.ctx.arc(cloud.x, cloud.y, cloud.size, 0, Math.PI * 2);
+                    this.ctx.arc(cloud.x - cloud.size * 0.6, cloud.y, cloud.size * 0.8, 0, Math.PI * 2);
+                    this.ctx.arc(cloud.x + cloud.size * 0.6, cloud.y, cloud.size * 0.8, 0, Math.PI * 2);
+                    this.ctx.fill();
+                }
+                
+                // Enhanced ground
+                const groundGradient = this.ctx.createLinearGradient(0, this.canvas.height - this.groundHeight, 0, this.canvas.height);
+                groundGradient.addColorStop(0, '#8B4513');
+                groundGradient.addColorStop(0.5, '#A0522D');
+                groundGradient.addColorStop(1, '#654321');
+                
+                this.ctx.fillStyle = groundGradient;
                 this.ctx.fillRect(0, this.canvas.height - this.groundHeight, this.canvas.width, this.groundHeight);
                 
-                // Ground pattern
-                this.ctx.fillStyle = '#A0522D';
-                for (let x = 0; x < this.canvas.width; x += 100) {
-                    this.ctx.fillRect(x, this.canvas.height - this.groundHeight, 50, this.groundHeight);
+                // Ground details
+                this.ctx.fillStyle = '#D2691E';
+                for (let x = 0; x < this.canvas.width; x += 80) {
+                    this.ctx.fillRect(x, this.canvas.height - this.groundHeight, 40, this.groundHeight);
                 }
                 
                 // Background elements
                 for (let bg of this.background) {
-                    if (bg.type === 'tree') {
+                    if (bg.type === 'temple') {
+                        // Temple pillars
+                        this.ctx.fillStyle = '#DAA520';
+                        this.ctx.fillRect(bg.x, this.canvas.height - bg.height - 120, 15, bg.height);
+                        this.ctx.fillRect(bg.x + 25, this.canvas.height - bg.height - 120, 15, bg.height);
+                        this.ctx.fillRect(bg.x + 50, this.canvas.height - bg.height - 120, 15, bg.height);
+                        
+                        // Temple roof
+                        this.ctx.fillStyle = '#B8860B';
+                        this.ctx.fillRect(bg.x - 10, this.canvas.height - bg.height - 140, 85, 20);
+                    } else if (bg.type === 'tree') {
+                        // Enhanced tree
+                        this.ctx.fillStyle = '#8B4513';
+                        this.ctx.fillRect(bg.x + 15, this.canvas.height - 220, 25, 120);
+                        
                         this.ctx.fillStyle = '#228B22';
-                        this.ctx.fillRect(bg.x, this.canvas.height - 200, 20, 100);
                         this.ctx.beginPath();
-                        this.ctx.arc(bg.x + 10, this.canvas.height - 200, 30, 0, Math.PI * 2);
+                        this.ctx.arc(bg.x + 27, this.canvas.height - 220, 40, 0, Math.PI * 2);
+                        this.ctx.fill();
+                        
+                        this.ctx.fillStyle = '#32CD32';
+                        this.ctx.beginPath();
+                        this.ctx.arc(bg.x + 27, this.canvas.height - 230, 25, 0, Math.PI * 2);
                         this.ctx.fill();
                     } else {
+                        // Enhanced rock
                         this.ctx.fillStyle = '#696969';
-                        this.ctx.fillRect(bg.x, this.canvas.height - 150, 40, 50);
+                        this.ctx.fillRect(bg.x, this.canvas.height - 170, 50, 60);
+                        this.ctx.fillStyle = '#808080';
+                        this.ctx.fillRect(bg.x + 10, this.canvas.height - 160, 30, 40);
                     }
                 }
             }
             
+            drawPlayer() {
+                const playerY = this.player.isSliding ? this.player.y + 25 : this.player.y;
+                const playerHeight = this.player.isSliding ? this.player.height - 25 : this.player.height;
+                
+                // Player shadow
+                this.ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
+                this.ctx.fillRect(this.player.x, this.canvas.height - this.groundHeight - 5, this.player.width, 8);
+                
+                // Main body with gradient
+                const bodyGradient = this.ctx.createLinearGradient(this.player.x, playerY, this.player.x, playerY + playerHeight);
+                bodyGradient.addColorStop(0, '#FFD700');
+                bodyGradient.addColorStop(1, '#FFA500');
+                
+                this.ctx.fillStyle = bodyGradient;
+                this.ctx.fillRect(this.player.x + 5, playerY + 20, this.player.width - 10, playerHeight - 20);
+                
+                // Head
+                this.ctx.fillStyle = '#DEB887';
+                this.ctx.beginPath();
+                this.ctx.arc(this.player.x + 22, playerY + 15, 15, 0, Math.PI * 2);
+                this.ctx.fill();
+                
+                // Eyes
+                this.ctx.fillStyle = '#000000';
+                this.ctx.fillRect(this.player.x + 17, playerY + 10, 3, 3);
+                this.ctx.fillRect(this.player.x + 25, playerY + 10, 3, 3);
+                
+                // Clothes with details
+                this.ctx.fillStyle = '#FF6B35';
+                this.ctx.fillRect(this.player.x + 8, playerY + 35, this.player.width - 16, 25);
+                
+                // Belt
+                this.ctx.fillStyle = '#8B4513';
+                this.ctx.fillRect(this.player.x + 8, playerY + 45, this.player.width - 16, 5);
+                
+                // Arms
+                this.ctx.fillStyle = '#DEB887';
+                this.ctx.fillRect(this.player.x + 2, playerY + 30, 8, 20);
+                this.ctx.fillRect(this.player.x + 35, playerY + 30, 8, 20);
+                
+                // Legs with running animation
+                const legOffset = this.player.animationFrame % 2 === 0 ? 2 : -2;
+                this.ctx.fillStyle = '#8B4513';
+                this.ctx.fillRect(this.player.x + 12 + legOffset, playerY + 55, 8, 15);
+                this.ctx.fillRect(this.player.x + 25 - legOffset, playerY + 55, 8, 15);
+            }
+            
+            drawObstacles() {
+                for (let obstacle of this.obstacles) {
+                    if (obstacle.type === 'spike') {
+                        // Spike obstacle
+                        this.ctx.fillStyle = '#8B0000';
+                        this.ctx.beginPath();
+                        this.ctx.moveTo(obstacle.x + obstacle.width / 2, obstacle.y);
+                        this.ctx.lineTo(obstacle.x, obstacle.y + obstacle.height);
+                        this.ctx.lineTo(obstacle.x + obstacle.width, obstacle.y + obstacle.height);
+                        this.ctx.closePath();
+                        this.ctx.fill();
+                        
+                        this.ctx.fillStyle = '#A0522D';
+                        this.ctx.fillRect(obstacle.x + 5, obstacle.y + obstacle.height - 10, obstacle.width - 10, 10);
+                    } else {
+                        // Regular obstacles with gradient
+                        const obstacleGradient = this.ctx.createLinearGradient(obstacle.x, obstacle.y, obstacle.x, obstacle.y + obstacle.height);
+                        obstacleGradient.addColorStop(0, '#8B4513');
+                        obstacleGradient.addColorStop(1, '#654321');
+                        
+                        this.ctx.fillStyle = obstacleGradient;
+                        this.ctx.fillRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
+                        
+                        // Add stone texture
+                        this.ctx.fillStyle = '#A0522D';
+                        this.ctx.fillRect(obstacle.x + 5, obstacle.y + 5, obstacle.width - 10, obstacle.height - 10);
+                        
+                        // Add cracks
+                        this.ctx.strokeStyle = '#654321';
+                        this.ctx.lineWidth = 2;
+                        this.ctx.beginPath();
+                        this.ctx.moveTo(obstacle.x + 10, obstacle.y + 15);
+                        this.ctx.lineTo(obstacle.x + 25, obstacle.y + 30);
+                        this.ctx.stroke();
+                    }
+                }
+            }
+            
+            drawCoins() {
+                for (let coin of this.coinItems) {
+                    if (!coin.collected) {
+                        this.ctx.save();
+                        this.ctx.translate(coin.x + coin.width / 2, coin.y + coin.height / 2);
+                        this.ctx.rotate(coin.rotation);
+                        
+                        // Outer ring
+                        this.ctx.fillStyle = '#FFD700';
+                        this.ctx.beginPath();
+                        this.ctx.arc(0, 0, 12, 0, Math.PI * 2);
+                        this.ctx.fill();
+                        
+                        // Inner circle
+                        this.ctx.fillStyle = '#FFA500';
+                        this.ctx.beginPath();
+                        this.ctx.arc(0, 0, 8, 0, Math.PI * 2);
+                        this.ctx.fill();
+                        
+                        // Center detail
+                        this.ctx.fillStyle = '#FF8C00';
+                        this.ctx.beginPath();
+                        this.ctx.arc(0, 0, 4, 0, Math.PI * 2);
+                        this.ctx.fill();
+                        
+                        this.ctx.restore();
+                        
+                        // Glow effect
+                        this.ctx.shadowColor = '#FFD700';
+                        this.ctx.shadowBlur = 15;
+                        this.ctx.fillStyle = 'rgba(255, 215, 0, 0.3)';
+                        this.ctx.beginPath();
+                        this.ctx.arc(coin.x + coin.width / 2, coin.y + coin.height / 2, 15, 0, Math.PI * 2);
+                        this.ctx.fill();
+                        this.ctx.shadowBlur = 0;
+                    }
+                }
+            }
+            
+            drawParticles() {
+                for (let particle of this.particles) {
+                    const alpha = particle.life / particle.maxLife;
+                    this.ctx.fillStyle = particle.color + Math.floor(alpha * 255).toString(16).padStart(2, '0');
+                    this.ctx.beginPath();
+                    this.ctx.arc(particle.x, particle.y, particle.size * alpha, 0, Math.PI * 2);
+                    this.ctx.fill();
+                }
+            }
+            
             updateUI() {
+                this.distance = Math.floor(this.score / 10);
                 document.getElementById('score').textContent = this.score;
                 document.getElementById('coins').textContent = this.coins;
-                document.getElementById('speed').textContent = Math.floor(this.gameSpeed);
+                document.getElementById('distance').textContent = this.distance;
+                document.getElementById('speed').textContent = (this.gameSpeed / 1.5).toFixed(1);
             }
             
             gameLoop(currentTime) {
@@ -543,29 +770,25 @@
                 const deltaTime = currentTime - this.lastTime;
                 this.lastTime = currentTime;
                 
-                // Clear canvas
                 this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
                 
-                // Update game objects
                 this.updatePlayer(deltaTime);
                 this.updateObstacles();
                 this.updateCoins();
+                this.updateParticles();
                 this.updateBackground();
                 this.checkCollisions();
                 
-                // Increase speed over time
                 this.gameSpeed += this.speedIncrement;
                 
-                // Draw everything
                 this.drawBackground();
                 this.drawPlayer();
                 this.drawObstacles();
                 this.drawCoins();
+                this.drawParticles();
                 
-                // Update UI
                 this.updateUI();
                 
-                // Continue game loop
                 this.animationId = requestAnimationFrame((time) => this.gameLoop(time));
             }
             
@@ -573,11 +796,13 @@
                 this.gameState = 'playing';
                 this.score = 0;
                 this.coins = 0;
-                this.gameSpeed = 2;
+                this.distance = 0;
+                this.gameSpeed = 1.5;
                 this.obstacles = [];
                 this.coinItems = [];
+                this.particles = [];
                 
-                this.player.y = this.canvas.height - 160;
+                this.player.y = this.canvas.height - 180;
                 this.player.isJumping = false;
                 this.player.isSliding = false;
                 this.player.velocityY = 0;
@@ -599,6 +824,7 @@
                 
                 document.getElementById('finalScore').textContent = `Score: ${this.score}`;
                 document.getElementById('finalCoins').textContent = `Coins: ${this.coins}`;
+                document.getElementById('finalDistance').textContent = `Distance: ${Math.floor(this.score / 10)}m`;
                 document.getElementById('gameOverScreen').style.display = 'flex';
                 document.getElementById('gameUI').style.display = 'none';
             }
@@ -608,7 +834,6 @@
             }
         }
         
-        // Initialize game
         let game;
         
         window.onload = () => {
